@@ -1,4 +1,5 @@
 import { createShortCode } from "../utils/createShortCode.js";
+import { insertUrl, findOriginalUrl, findShortCode } from "../models/Url.js";
 
 const createShortUrl = async (req,res) => {
     try{
