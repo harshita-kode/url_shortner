@@ -1,3 +1,4 @@
+import { createShortCode } from "../utils/createShortCode.js";
 
 const createShortUrl = async (req,res) => {
     try{
