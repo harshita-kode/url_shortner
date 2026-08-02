@@ -41,7 +41,7 @@ const createShortUrl = async (req,res) => {
 }
 
 const redirectUrl = async (req, res) =>{
-    
+
     const {shortCode} = req.params;
     try{
         const result = await findShortCode(shortCode);
@@ -59,4 +59,4 @@ const redirectUrl = async (req, res) =>{
     }
 }
 
-export {createShortUrl}
+export {createShortUrl, redirectUrl}
