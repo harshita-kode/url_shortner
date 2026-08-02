@@ -40,4 +40,23 @@ const createShortUrl = async (req,res) => {
     }
 }
 
+const redirectUrl = async (req, res) =>{
+    
+    const {shortCode} = req.params;
+    try{
+        const result = await findShortCode(shortCode);
+        if(!result){
+            return res.status(404).json({
+                "error" : "URL not found"
+            });
+        }
+        return res.redirect(result.original_url)
+    }
+    catch(err){
+        res.status(500).json({
+            "error" : "Internal Server error"
+        });
+    }
+}
+
 export {createShortUrl}
