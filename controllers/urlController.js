@@ -33,11 +33,11 @@ const createShortUrl = async (req,res) => {
 
     }
     catch(err){
-        console.error(err)
+        console.error(err);
         
         return res.status(500).json({
             error : "Internal Server Error"
-        })
+        });
     }
 }
 
