@@ -1,12 +1,14 @@
 import { compare } from "bcrypt";
-import { comparePassword } from "../utils/bcryptPassword";
-import { generateToken } from "../utils/jwt";
+import { bcryptPassword, comparePassword } from "../utils/bcryptPassword.js";
+import { generateToken } from "../utils/jwt.js";
+import { insertUser, findUser } from "../models/Users.js";
 
 const userRegister = async (req, res)=>{
-    const {emailId, password} = req.body;
+    const {email_id, password} = req.body;
+    // console.log(email_id, password);
     try{
-        const hashPassowrd = bcryptPassword(password);
-        await inserUser(emailId, hashPassowrd);
+        const hashPassowrd = await bcryptPassword(password);
+        await insertUser(email_id, hashPassowrd);
         return res.status(201).json({
             message : "User registered successfully"
         });
@@ -14,16 +16,18 @@ const userRegister = async (req, res)=>{
     }
     catch(err){
         return res.status(500).json({
-          error : "Internal server error"
+          something : "Internal server error"
         });
     }
 }
 
 const userLogin = async (req,res)=>{
-    const {emailId, password} = req.body;
+    const {email_id, password} = req.body;
     try{
-        const user = await findUser(emailId);
-        const hash = user.hash_password
+        const user = await findUser(email_id);
+        console.log(user);
+        const hash = user.password_hash;
+        console.log(hash)
         if(!hash){
             return res.status(401).json({
                 error : "Invalid email or password"
@@ -43,6 +47,10 @@ const userLogin = async (req,res)=>{
         })
 
         const token = generateToken(user.user_id);
+        req.cookie('token', token,{
+            httpOnly : true,
+            secure : false
+        })
 
     }
     catch(err){
@@ -53,3 +61,5 @@ const userLogin = async (req,res)=>{
         });
     }
 }
+
+export { userRegister, userLogin}
