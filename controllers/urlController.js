@@ -1,10 +1,10 @@
 import { createShortCode } from "../utils/createShortCode.js";
-import { insertUrl, findOriginalUrl, findShortCode } from "../models/Url.js";
+import { insertUrl, findOriginalUrl, findShortCode, getUserUrls} from "../models/Url.js";
 
 const createShortUrl = async (req,res) => {
     try{
         const {url} = req.body;
-
+        const userId = req.user.userId;
         const result = await findOriginalUrl(url);
         const domain = req.protocol + '://' + req.get('host') + '/';
 
@@ -18,7 +18,7 @@ const createShortUrl = async (req,res) => {
             shortCode = createShortCode();
 
             try{
-                await insertUrl(url,shortCode);
+                await insertUrl(userId, url, shortCode);
                 break;
             }
             catch(err){
@@ -47,7 +47,7 @@ const redirectUrl = async (req, res) =>{
         const result = await findShortCode(shortCode);
         if(!result){
             return res.status(404).json({
-                "error" : "URL not found"
+                "error" : "URL not found here?"
             });
         }
         return res.redirect(result.original_url)
@@ -59,4 +59,19 @@ const redirectUrl = async (req, res) =>{
     }
 }
 
-export {createShortUrl, redirectUrl}
+const getUrls = async (req,res) =>{
+    try{
+        const userId = req.user.userId;
+        const result = await getUserUrls(userId);
+        result.forEach(res => {
+            console.log(res.original_url+" - "+res.short_code);
+        });
+    }
+    catch(err){
+        res.status(500).json({
+            "error" : "Internal Server Error"
+        })
+    }
+}
+
+export {createShortUrl, redirectUrl, getUrls}

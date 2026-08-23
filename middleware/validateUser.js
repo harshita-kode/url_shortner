@@ -2,7 +2,7 @@ import { validateJwt } from "../utils/jwt.js";
 
 const validateUser = (req,res,next)=>{
     try{
-        const token = req.cookies.token
+        const token = req.cookies.token;
         const decoded = validateJwt(token);
         req.user=decoded;
         next();

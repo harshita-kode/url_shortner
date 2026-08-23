@@ -1,7 +1,7 @@
 import { pool } from "../config/db.js"
 
-const insertUrl = async (url, shortCode) => {
-    return await pool.query("INSERT INTO url (original_url, short_code) VALUES ($1, $2)", [url, shortCode]);
+const insertUrl = async (userId, url, shortCode) => {
+    return await pool.query("INSERT INTO url (original_url, short_code, user_id) VALUES ($1, $2, $3)", [url, shortCode, userId]);
 }
 
 const findOriginalUrl = async (url) => {
@@ -14,4 +14,9 @@ const findShortCode = async (shortCode) => {
     return result.rows[0];
 }
 
-export {insertUrl, findOriginalUrl, findShortCode};
+const getUserUrls = async(userId) =>{
+    const result = await pool.query("SELECT * FROM url WHERE user_id = $1", [userId]);
+    return result.rows;
+}
+
+export {insertUrl, findOriginalUrl, findShortCode, getUserUrls};
